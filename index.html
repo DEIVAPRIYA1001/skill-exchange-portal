@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SkillHub - Skill Exchange Portal Management Dashboard</title>
+    <title>SkillHub Interactive Dashboard - Skill Exchange Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -11,11 +12,144 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --bg-light: #f5f7fa;
+            --bg-dark: #1a1a2e;
+            --text-light: #333;
+            --text-dark: #e0e0e0;
+            --card-light: #ffffff;
+            --card-dark: #16213e;
+            --border-light: #ddd;
+            --border-dark: #333;
+            --success: #4caf50;
+            --danger: #f44336;
+            --warning: #ff9800;
+            --info: #2196f3;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            color: #333;
+            background-color: var(--bg-light);
+            color: var(--text-light);
             line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode {
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
+        }
+
+        /* ==================== ANIMATIONS ==================== */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes zoom {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes typingEffect {
+            from {
+                width: 0;
+            }
+            to {
+                width: 100%;
+            }
+        }
+
+        @keyframes progressBar {
+            from {
+                width: 0%;
+            }
+            to {
+                width: 100%;
+            }
         }
 
         /* ==================== HEADER ==================== */
@@ -27,6 +161,11 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            animation: slideInDown 0.5s ease;
+        }
+
+        body.dark-mode header {
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
         }
 
         .header-container {
@@ -55,6 +194,7 @@
             font-weight: bold;
             font-size: 24px;
             color: #667eea;
+            animation: pulse 2s infinite;
         }
 
         .header-text h1 {
@@ -65,13 +205,32 @@
         .tagline {
             font-size: 12px;
             opacity: 0.9;
-            margin-top: 3px;
         }
 
-        .student-info {
-            font-size: 12px;
-            opacity: 0.85;
-            margin-top: 5px;
+        .header-right {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
         }
 
         /* ==================== NAVIGATION ==================== */
@@ -81,12 +240,12 @@
             position: sticky;
             top: 90px;
             z-index: 99;
+            animation: slideInDown 0.6s ease;
         }
 
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+        body.dark-mode nav {
+            background: var(--card-dark);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         nav ul {
@@ -94,6 +253,9 @@
             display: flex;
             gap: 0;
             flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
         nav li {
@@ -104,47 +266,64 @@
         nav a {
             display: block;
             padding: 15px;
-            color: #333;
+            color: var(--text-light);
             text-decoration: none;
             text-align: center;
             transition: all 0.3s ease;
             border-bottom: 3px solid transparent;
             font-weight: 500;
+            position: relative;
         }
 
-        nav a:hover {
+        body.dark-mode nav a {
+            color: var(--text-dark);
+        }
+
+        nav a:hover,
+        nav a.active {
             background: #f0f0f0;
             border-bottom-color: #667eea;
             color: #667eea;
         }
 
-        /* ==================== MAIN CONTAINER ==================== */
+        body.dark-mode nav a:hover,
+        body.dark-mode nav a.active {
+            background: #16213e;
+            color: #667eea;
+        }
+
+        /* ==================== CONTAINER ==================== */
         .container {
             max-width: 1200px;
             margin: 30px auto;
             padding: 0 20px;
         }
 
-        /* ==================== WELCOME SECTION ==================== */
-        .welcome-section {
-            background: white;
+        /* ==================== WELCOME BANNER ==================== */
+        .welcome-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px;
             border-radius: 10px;
-            padding: 40px;
             margin-bottom: 30px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            border-left: 5px solid #667eea;
+            animation: slideInUp 0.6s ease;
         }
 
-        .welcome-section h2 {
-            color: #667eea;
-            font-size: 32px;
-            margin-bottom: 15px;
+        body.dark-mode .welcome-banner {
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
         }
 
-        .welcome-section p {
+        .welcome-banner h2 {
+            font-size: 40px;
+            margin-bottom: 10px;
+            animation: slideInLeft 0.7s ease;
+        }
+
+        .welcome-banner p {
             font-size: 16px;
-            margin-bottom: 20px;
-            color: #555;
+            margin-bottom: 15px;
+            animation: slideInRight 0.7s ease;
         }
 
         .mission-vision {
@@ -155,15 +334,149 @@
         }
 
         .mission-box, .vision-box {
-            background: #f8f9fa;
-            padding: 15px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
             border-radius: 8px;
-            border-left: 4px solid #764ba2;
+            backdrop-filter: blur(10px);
+            animation: zoom 0.8s ease;
         }
 
         .mission-box h3, .vision-box h3 {
-            color: #764ba2;
             margin-bottom: 10px;
+            animation: fadeIn 0.8s ease;
+        }
+
+        /* ==================== DATE & TIME ==================== */
+        .datetime-display {
+            background: var(--card-light);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.8s ease;
+        }
+
+        body.dark-mode .datetime-display {
+            background: var(--card-dark);
+        }
+
+        .datetime-display h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .datetime-display p {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* ==================== IMAGE SLIDER ==================== */
+        .slider-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            animation: slideInUp 0.8s ease;
+        }
+
+        .slider {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            transition: all 0.5s ease;
+        }
+
+        .slider-slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .slider-slide.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+        }
+
+        .slider-slide-1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .slider-slide-2 {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .slider-slide-3 {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .slider-slide-4 {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .slider-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .slider-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .slider-dot.active {
+            background: white;
+            transform: scale(1.3);
+        }
+
+        .slider-prev, .slider-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .slider-prev:hover, .slider-next:hover {
+            background: rgba(0, 0, 0, 0.8);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .slider-prev {
+            left: 20px;
+        }
+
+        .slider-next {
+            right: 20px;
         }
 
         /* ==================== DASHBOARD STATISTICS ==================== */
@@ -175,17 +488,27 @@
         }
 
         .stat-card {
-            background: white;
+            background: var(--card-light);
             padding: 25px;
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: all 0.3s ease;
+            animation: slideInUp 0.5s ease;
+        }
+
+        body.dark-mode .stat-card {
+            background: var(--card-dark);
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-10px);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
         }
 
         .stat-number {
@@ -193,6 +516,7 @@
             font-weight: bold;
             color: #667eea;
             margin: 10px 0;
+            animation: progressBar 2s ease;
         }
 
         .stat-label {
@@ -202,18 +526,22 @@
             letter-spacing: 1px;
         }
 
-        .stat-icon {
-            font-size: 40px;
-            margin-bottom: 10px;
+        body.dark-mode .stat-label {
+            color: #aaa;
         }
 
         /* ==================== FEATURES SECTION ==================== */
         .features-section {
-            background: white;
+            background: var(--card-light);
             padding: 40px;
             border-radius: 10px;
             margin-bottom: 30px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            animation: slideInUp 0.7s ease;
+        }
+
+        body.dark-mode .features-section {
+            background: var(--card-dark);
         }
 
         .features-section h2 {
@@ -235,11 +563,22 @@
             border-radius: 8px;
             border-left: 4px solid #667eea;
             transition: all 0.3s ease;
+            animation: slideInUp 0.6s ease;
+        }
+
+        body.dark-mode .features-list li {
+            background: #16213e;
+            border-left-color: #667eea;
         }
 
         .features-list li:hover {
             background: #efefff;
             transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode .features-list li:hover {
+            background: #1a3a52;
         }
 
         .features-list li:before {
@@ -251,11 +590,16 @@
 
         /* ==================== SERVICES SECTION ==================== */
         .services-section {
-            background: white;
+            background: var(--card-light);
             padding: 40px;
             border-radius: 10px;
             margin-bottom: 30px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            animation: slideInUp 0.8s ease;
+        }
+
+        body.dark-mode .services-section {
+            background: var(--card-dark);
         }
 
         .services-section h2 {
@@ -276,6 +620,17 @@
             border-radius: 8px;
             position: relative;
             counter-increment: service-counter;
+            transition: all 0.3s ease;
+            animation: slideInRight 0.6s ease;
+        }
+
+        body.dark-mode .services-list li {
+            background: #16213e;
+        }
+
+        .services-list li:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .services-list li:before {
@@ -294,60 +649,107 @@
             font-weight: bold;
         }
 
-        /* ==================== LATEST UPDATES ==================== */
-        .updates-section {
-            background: white;
-            padding: 40px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .updates-section h2 {
-            color: #667eea;
-            margin-bottom: 25px;
-            font-size: 28px;
-        }
-
-        .updates-container {
-            display: grid;
-            gap: 20px;
-        }
-
-        article {
-            padding: 20px;
-            background: #f8f9fa;
+        /* ==================== NOTIFICATION PANEL ==================== */
+        .notification-panel {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: var(--card-light);
             border-radius: 8px;
-            border-left: 4px solid #764ba2;
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            width: 300px;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 200;
+            animation: slideInRight 0.5s ease;
+            display: none;
         }
 
-        article:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        body.dark-mode .notification-panel {
+            background: var(--card-dark);
         }
 
-        article h3 {
-            color: #333;
-            margin-bottom: 8px;
+        .notification-panel.show {
+            display: block;
         }
 
-        article .date {
-            color: #999;
+        .notification-header {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .notification-close:hover {
+            transform: rotate(90deg);
+        }
+
+        .notification-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            animation: slideInLeft 0.4s ease;
+        }
+
+        body.dark-mode .notification-item {
+            border-bottom-color: #333;
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-item.success {
+            border-left: 4px solid #4caf50;
+        }
+
+        .notification-item.warning {
+            border-left: 4px solid #ff9800;
+        }
+
+        .notification-item.info {
+            border-left: 4px solid #2196f3;
+        }
+
+        .notification-item h4 {
+            margin: 0 0 5px 0;
+            font-size: 14px;
+        }
+
+        .notification-item p {
+            margin: 0;
             font-size: 12px;
-            margin-bottom: 10px;
+            color: #666;
         }
 
-        article p {
-            color: #555;
+        body.dark-mode .notification-item p {
+            color: #aaa;
         }
 
-        /* ==================== REGISTRATION FORM ==================== */
+        /* ==================== FORM SECTION ==================== */
         .form-section {
-            background: white;
+            background: var(--card-light);
             padding: 40px;
             border-radius: 10px;
             margin-bottom: 30px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            animation: slideInUp 0.9s ease;
+        }
+
+        body.dark-mode .form-section {
+            background: var(--card-dark);
         }
 
         .form-section h2 {
@@ -370,8 +772,12 @@
 
         label {
             margin-bottom: 8px;
-            color: #333;
+            color: var(--text-light);
             font-weight: 500;
+        }
+
+        body.dark-mode label {
+            color: var(--text-dark);
         }
 
         input[type="text"],
@@ -382,11 +788,25 @@
         textarea,
         select {
             padding: 12px;
-            border: 1px solid #ddd;
+            border: 2px solid #ddd;
             border-radius: 6px;
             font-size: 14px;
             font-family: inherit;
-            transition: border-color 0.3s ease;
+            transition: all 0.3s ease;
+            background: white;
+            color: #333;
+        }
+
+        body.dark-mode input[type="text"],
+        body.dark-mode input[type="email"],
+        body.dark-mode input[type="tel"],
+        body.dark-mode input[type="password"],
+        body.dark-mode input[type="date"],
+        body.dark-mode textarea,
+        body.dark-mode select {
+            background: #16213e;
+            color: #e0e0e0;
+            border-color: #333;
         }
 
         input:focus,
@@ -401,6 +821,19 @@
             resize: vertical;
             min-height: 120px;
             grid-column: 1 / -1;
+        }
+
+        .form-error {
+            color: #f44336;
+            font-size: 12px;
+            margin-top: 5px;
+            animation: slideInLeft 0.3s ease;
+        }
+
+        .form-success {
+            color: #4caf50;
+            font-size: 12px;
+            margin-top: 5px;
         }
 
         .form-buttons {
@@ -430,6 +863,10 @@
             box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         }
 
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
         .btn-reset {
             background: #e0e0e0;
             color: #333;
@@ -440,58 +877,68 @@
             background: #d0d0d0;
         }
 
-        /* ==================== MODULES TABLE ==================== */
-        .modules-section {
-            background: white;
-            padding: 40px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            overflow-x: auto;
+        body.dark-mode .btn-reset {
+            background: #333;
+            color: #e0e0e0;
         }
 
-        .modules-section h2 {
-            color: #667eea;
-            margin-bottom: 25px;
-            font-size: 28px;
+        body.dark-mode .btn-reset:hover {
+            background: #444;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        thead {
-            background: #667eea;
+        .notification-btn {
+            background: #2196f3;
             color: white;
+            margin-right: 10px;
         }
 
-        th {
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
+        .notification-btn:hover {
+            background: #1976d2;
         }
 
-        td {
-            padding: 15px;
-            border-bottom: 1px solid #eee;
+        /* ==================== SCROLL-TO-TOP BUTTON ==================== */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            z-index: 150;
+            animation: bounce 1s infinite;
         }
 
-        tbody tr:hover {
-            background: #f8f9fa;
+        .scroll-to-top.show {
+            display: flex;
         }
 
-        tbody tr:nth-child(even) {
-            background: #f8f9fa;
+        .scroll-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         }
 
         /* ==================== CONTACT SECTION ==================== */
         .contact-section {
-            background: white;
+            background: var(--card-light);
             padding: 40px;
             border-radius: 10px;
             margin-bottom: 30px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            animation: slideInUp 1s ease;
+        }
+
+        body.dark-mode .contact-section {
+            background: var(--card-dark);
         }
 
         .contact-section h2 {
@@ -510,6 +957,7 @@
             display: flex;
             align-items: flex-start;
             gap: 15px;
+            animation: slideInUp 0.8s ease;
         }
 
         .contact-icon {
@@ -519,13 +967,21 @@
         }
 
         .contact-info h3 {
-            color: #333;
+            color: var(--text-light);
             margin-bottom: 5px;
+        }
+
+        body.dark-mode .contact-info h3 {
+            color: var(--text-dark);
         }
 
         .contact-info p {
             color: #666;
             font-size: 14px;
+        }
+
+        body.dark-mode .contact-info p {
+            color: #aaa;
         }
 
         .social-links {
@@ -549,7 +1005,7 @@
 
         .social-links a:hover {
             background: #764ba2;
-            transform: translateY(-3px);
+            transform: translateY(-3px) scale(1.1);
         }
 
         /* ==================== FOOTER ==================== */
@@ -559,6 +1015,11 @@
             text-align: center;
             padding: 30px;
             margin-top: 50px;
+            animation: slideInUp 1.1s ease;
+        }
+
+        body.dark-mode footer {
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
         }
 
         footer p {
@@ -587,32 +1048,34 @@
                 flex: none;
             }
 
-            nav a {
-                border-bottom: none;
-                border-right: 3px solid transparent;
-            }
-
-            nav a:hover {
-                border-bottom: none;
-                border-right-color: #667eea;
-            }
-
             .mission-vision {
                 grid-template-columns: 1fr;
             }
 
-            .welcome-section,
-            .features-section,
-            .services-section,
-            .updates-section,
-            .form-section,
-            .modules-section,
-            .contact-section {
-                padding: 20px;
+            .welcome-banner {
+                padding: 30px;
+            }
+
+            .welcome-banner h2 {
+                font-size: 28px;
+            }
+
+            .slider {
+                height: 250px;
             }
 
             .form-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .form-buttons {
+                flex-direction: column;
+            }
+
+            .notification-panel {
+                width: calc(100% - 40px);
+                right: 20px;
+                left: 20px;
             }
         }
 
@@ -621,16 +1084,29 @@
                 grid-template-columns: 1fr;
             }
 
-            .form-buttons {
-                flex-direction: column;
+            .welcome-banner {
+                padding: 20px;
             }
 
-            table {
-                font-size: 12px;
+            .welcome-banner h2 {
+                font-size: 22px;
             }
 
-            th, td {
-                padding: 10px 5px;
+            .form-section,
+            .features-section,
+            .services-section,
+            .contact-section {
+                padding: 20px;
+            }
+
+            .slider {
+                height: 200px;
+            }
+
+            .slider-prev, .slider-next {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
             }
         }
     </style>
@@ -643,84 +1119,128 @@
                 <div class="logo">SH</div>
                 <div class="header-text">
                     <h1>SkillHub</h1>
-                    <p class="tagline">Skill Exchange Portal Management System</p>
-                    <p class="student-info">Student: Deivapriya | Reg No: 2303717620522012</p>
+                    <p class="tagline">Interactive Skill Exchange Portal</p>
                 </div>
+            </div>
+            <div class="header-right">
+                <button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
             </div>
         </div>
     </header>
 
     <!-- ==================== NAVIGATION ==================== -->
     <nav>
-        <div class="nav-container">
-            <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#dashboard">Dashboard</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#reports">Reports</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact</a></li>
-                <li><a href="#logout">Logout</a></li>
-            </ul>
-        </div>
+        <ul>
+            <li><a href="#home" class="nav-link active">Home</a></li>
+            <li><a href="#dashboard" class="nav-link">Dashboard</a></li>
+            <li><a href="#features" class="nav-link">Features</a></li>
+            <li><a href="#services" class="nav-link">Services</a></li>
+            <li><a href="#reports" class="nav-link">Reports</a></li>
+            <li><a href="#contact" class="nav-link">Contact</a></li>
+            <li><a href="#logout" class="nav-link">Logout</a></li>
+        </ul>
     </nav>
 
     <div class="container">
-        <!-- ==================== WELCOME SECTION ==================== -->
-        <section id="home" class="welcome-section">
-            <h2>Welcome to SkillHub</h2>
-            <p><strong>Welcome Message:</strong> Your gateway to skill exchange and professional development. Connect with experts, share your knowledge, and grow together.</p>
-            
-            <p><strong>Project Description:</strong> SkillHub is a modern web-based platform designed to facilitate skill exchange among professionals, students, and enthusiasts. Users can list their skills, discover expertise they need, and collaborate in a vibrant learning community.</p>
+        <!-- ==================== WELCOME BANNER ==================== -->
+        <section id="home" class="welcome-banner">
+            <h2>Welcome to SkillHub Interactive Dashboard</h2>
+            <p><strong>Your gateway to skill exchange and professional development.</strong></p>
             
             <div class="mission-vision">
                 <div class="mission-box">
                     <h3>🎯 Mission</h3>
-                    <p>To create a transparent, accessible, and secure platform where skills become currency, enabling individuals to grow professionally through peer-to-peer learning and knowledge exchange.</p>
+                    <p>Create a transparent, accessible, and secure platform where skills become currency, enabling individuals to grow professionally.</p>
                 </div>
                 <div class="vision-box">
                     <h3>🚀 Vision</h3>
-                    <p>To build a global community where everyone can learn from everyone, breaking down barriers to education and professional development while fostering collaboration and innovation.</p>
+                    <p>Build a global community where everyone can learn from everyone, breaking down barriers to education and professional development.</p>
                 </div>
             </div>
         </section>
+
+        <!-- ==================== DATE & TIME DISPLAY ==================== -->
+        <div class="datetime-display">
+            <h3>📅 Current Date & Time</h3>
+            <p id="dateTime"></p>
+        </div>
+
+        <!-- ==================== IMAGE SLIDER ==================== -->
+        <div class="slider-container">
+            <div class="slider">
+                <div class="slider-slide active slider-slide-1">
+                    <div>
+                        <h2>🎓 Skill Exchange Portal</h2>
+                        <p>Learn from experts and share your knowledge</p>
+                    </div>
+                </div>
+                <div class="slider-slide slider-slide-2">
+                    <div>
+                        <h2>🌍 Global Community</h2>
+                        <p>Connect with professionals worldwide</p>
+                    </div>
+                </div>
+                <div class="slider-slide slider-slide-3">
+                    <div>
+                        <h2>💼 Professional Growth</h2>
+                        <p>Enhance your career with new skills</p>
+                    </div>
+                </div>
+                <div class="slider-slide slider-slide-4">
+                    <div>
+                        <h2>🏆 Certification Programs</h2>
+                        <p>Earn recognized credentials</p>
+                    </div>
+                </div>
+            </div>
+            <button class="slider-prev" onclick="changeSlide(-1)">&#10094;</button>
+            <button class="slider-next" onclick="changeSlide(1)">&#10095;</button>
+            <div class="slider-controls">
+                <span class="slider-dot active" onclick="currentSlide(0)"></span>
+                <span class="slider-dot" onclick="currentSlide(1)"></span>
+                <span class="slider-dot" onclick="currentSlide(2)"></span>
+                <span class="slider-dot" onclick="currentSlide(3)"></span>
+            </div>
+        </div>
 
         <!-- ==================== DASHBOARD STATISTICS ==================== -->
         <section id="dashboard" class="dashboard-stats">
             <div class="stat-card">
                 <div class="stat-icon">👥</div>
                 <div class="stat-label">Total Users</div>
-                <div class="stat-number">12,847</div>
+                <div class="stat-number" data-target="12847">0</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">✅</div>
                 <div class="stat-label">Active Users</div>
-                <div class="stat-number">8,392</div>
+                <div class="stat-number" data-target="8392">0</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">💰</div>
                 <div class="stat-label">Revenue</div>
-                <div class="stat-number">$2.5M</div>
+                <div class="stat-number" data-target="2500000">$0</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">📊</div>
                 <div class="stat-label">Transactions</div>
-                <div class="stat-number">45,320</div>
+                <div class="stat-number" data-target="45320">0</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">🔔</div>
                 <div class="stat-label">Notifications</div>
-                <div class="stat-number">1,204</div>
+                <div class="stat-number" data-target="1204">0</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">⏳</div>
                 <div class="stat-label">Pending Tasks</div>
-                <div class="stat-number">328</div>
+                <div class="stat-number" data-target="328">0</div>
             </div>
         </section>
 
         <!-- ==================== FEATURES SECTION ==================== -->
-        <section class="features-section">
+        <section id="features" class="features-section">
             <h2>Key Features</h2>
             <ul class="features-list">
                 <li>User-Friendly Profile Management with Skill Showcasing</li>
@@ -737,7 +1257,7 @@
         </section>
 
         <!-- ==================== SERVICES SECTION ==================== -->
-        <section class="services-section" id="services">
+        <section id="services" class="services-section">
             <h2>Our Services</h2>
             <ol class="services-list">
                 <li><strong>Skill Registration and Portfolio Building</strong> - Create comprehensive skill profiles with certifications and experience details</li>
@@ -751,148 +1271,86 @@
             </ol>
         </section>
 
-        <!-- ==================== LATEST UPDATES ==================== -->
-        <section class="updates-section">
-            <h2>Latest Announcements</h2>
-            <div class="updates-container">
-                <article>
-                    <h3>🎉 Platform v2.0 Launched</h3>
-                    <p class="date">June 20, 2026</p>
-                    <p>We're excited to announce the release of SkillHub v2.0 with enhanced features including AI-powered skill recommendations, improved mobile interface, and advanced analytics dashboard.</p>
-                </article>
-                <article>
-                    <h3>📚 New Learning Paths Available</h3>
-                    <p class="date">June 18, 2026</p>
-                    <p>Explore our newly curated learning paths covering Web Development, Data Science, Cloud Computing, and Digital Marketing. Start your journey to mastery today!</p>
-                </article>
-                <article>
-                    <h3>🏆 Community Milestone Achievement</h3>
-                    <p class="date">June 15, 2026</p>
-                    <p>SkillHub community has reached 50,000 active learners! Celebrate with exclusive rewards, discounts on premium courses, and special recognition badges.</p>
-                </article>
-                <article>
-                    <h3>🔐 Enhanced Security Updates</h3>
-                    <p class="date">June 10, 2026</p>
-                    <p>We've implemented end-to-end encryption, two-factor authentication, and advanced fraud detection to ensure your data remains safe and secure.</p>
-                </article>
+        <!-- ==================== NOTIFICATION PANEL ==================== -->
+        <div class="notification-panel" id="notificationPanel">
+            <div class="notification-header">
+                <span>Notifications</span>
+                <button class="notification-close" onclick="closeNotifications()">×</button>
             </div>
-        </section>
+            <div class="notification-item success">
+                <h4>✓ Registration Successful</h4>
+                <p>Your account has been created successfully</p>
+            </div>
+            <div class="notification-item info">
+                <h4>ℹ New Message</h4>
+                <p>You have received a new message from Admin</p>
+            </div>
+            <div class="notification-item warning">
+                <h4>⚠ Pending Tasks</h4>
+                <p>You have 5 pending tasks to complete</p>
+            </div>
+        </div>
 
         <!-- ==================== REGISTRATION FORM ==================== -->
         <section class="form-section">
             <h2>User Registration Form</h2>
-            <form>
+            <button class="notification-btn" onclick="showNotifications()">Show Notifications</button>
+            <form id="registrationForm">
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="name">Full Name *</label>
-                        <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                        <input type="text" id="name" name="name" placeholder="Enter your full name">
+                        <span class="form-error" id="nameError"></span>
                     </div>
                     <div class="form-group">
                         <label for="email">Email Address *</label>
-                        <input type="email" id="email" name="email" placeholder="example@domain.com" required>
+                        <input type="email" id="email" name="email" placeholder="example@domain.com">
+                        <span class="form-error" id="emailError"></span>
                     </div>
                     <div class="form-group">
                         <label for="phone">Phone Number *</label>
-                        <input type="tel" id="phone" name="phone" placeholder="+91-XXXXXXXXXX" required>
+                        <input type="tel" id="phone" name="phone" placeholder="+91-XXXXXXXXXX">
+                        <span class="form-error" id="phoneError"></span>
                     </div>
                     <div class="form-group">
                         <label for="password">Password *</label>
-                        <input type="password" id="password" name="password" placeholder="Minimum 8 characters" required>
+                        <input type="password" id="password" name="password" placeholder="Minimum 8 characters">
+                        <span class="form-error" id="passwordError"></span>
                     </div>
                     <div class="form-group">
                         <label for="gender">Gender *</label>
-                        <select id="gender" name="gender" required>
+                        <select id="gender" name="gender">
                             <option value="">Select your gender</option>
                             <option value="male">Male</option>
                             <option value="female">Female</option>
                             <option value="other">Other</option>
                             <option value="prefer-not">Prefer not to say</option>
                         </select>
+                        <span class="form-error" id="genderError"></span>
                     </div>
                     <div class="form-group">
                         <label for="dob">Date of Birth *</label>
-                        <input type="date" id="dob" name="dob" required>
+                        <input type="date" id="dob" name="dob">
+                        <span class="form-error" id="dobError"></span>
                     </div>
                     <div class="form-group">
                         <label for="address">Address *</label>
-                        <textarea id="address" name="address" placeholder="Enter your complete address" required></textarea>
+                        <textarea id="address" name="address" placeholder="Enter your complete address"></textarea>
+                        <span class="form-error" id="addressError"></span>
                     </div>
                 </div>
                 <div class="form-buttons">
                     <button type="submit" class="btn-submit">Submit Registration</button>
                     <button type="reset" class="btn-reset">Clear Form</button>
                 </div>
+                <span class="form-success" id="successMessage"></span>
             </form>
         </section>
+    </div>
 
-        <!-- ==================== MODULES TABLE ==================== -->
-        <section class="modules-section">
-            <h2>Application Modules</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Module ID</th>
-                        <th>Module Name</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>MOD001</td>
-                        <td>User Management</td>
-                        <td>Handles user registration, authentication, profile management, and account settings</td>
-                    </tr>
-                    <tr>
-                        <td>MOD002</td>
-                        <td>Skill Management</td>
-                        <td>Manages skill creation, verification, endorsements, and skill portfolio building</td>
-                    </tr>
-                    <tr>
-                        <td>MOD003</td>
-                        <td>Search & Discovery</td>
-                        <td>Advanced search functionality, skill recommendations, and user discovery engine</td>
-                    </tr>
-                    <tr>
-                        <td>MOD004</td>
-                        <td>Communication</td>
-                        <td>Real-time messaging, notifications, and community forum functionality</td>
-                    </tr>
-                    <tr>
-                        <td>MOD005</td>
-                        <td>Payment & Transaction</td>
-                        <td>Secure payment gateway, transaction management, and financial reporting</td>
-                    </tr>
-                    <tr>
-                        <td>MOD006</td>
-                        <td>Analytics & Reports</td>
-                        <td>Dashboard analytics, user insights, performance metrics, and data visualization</td>
-                    </tr>
-                    <tr>
-                        <td>MOD007</td>
-                        <td>Training & Courses</td>
-                        <td>Course management, training modules, progress tracking, and certification</td>
-                    </tr>
-                    <tr>
-                        <td>MOD008</td>
-                        <td>Admin Panel</td>
-                        <td>Administrator controls, user management, content moderation, and system settings</td>
-                    </tr>
-                    <tr>
-                        <td>MOD009</td>
-                        <td>Rating & Review</td>
-                        <td>User rating system, feedback management, and quality assurance mechanisms</td>
-                    </tr>
-                    <tr>
-                        <td>MOD010</td>
-                        <td>Security & Compliance</td>
-                        <td>Data encryption, security protocols, compliance management, and audit trails</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-
-        <!-- ==================== CONTACT SECTION ==================== -->
-        <section class="contact-section" id="contact">
+    <!-- ==================== CONTACT SECTION ==================== -->
+    <section class="contact-section" id="contact">
+        <div class="container">
             <h2>Contact Information</h2>
             <div class="contact-grid">
                 <div class="contact-item">
@@ -932,8 +1390,8 @@
                     </div>
                 </div>
             </div>
-        </section>
-    </div>
+        </div>
+    </section>
 
     <!-- ==================== FOOTER ==================== -->
     <footer>
@@ -941,5 +1399,254 @@
         <p class="footer-credit">Designed and Developed by Deivapriya | Registration No: 23IT721</p>
         <p>© All Rights Reserved | Full Stack Development Laboratory</p>
     </footer>
+
+    <!-- ==================== SCROLL-TO-TOP BUTTON ==================== -->
+    <button class="scroll-to-top" id="scrollToTopBtn" onclick="scrollToTop()">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script>
+        // ==================== THEME SWITCHER ====================
+        const themeToggle = document.getElementById('themeToggle');
+        const htmlElement = document.documentElement;
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        htmlElement.style.colorScheme = savedTheme;
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+
+        themeToggle.addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            const newTheme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+            localStorage.setItem('theme', newTheme);
+            themeToggle.innerHTML = newTheme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        });
+
+        // ==================== DATE & TIME DISPLAY ====================
+        function updateDateTime() {
+            const now = new Date();
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            document.getElementById('dateTime').textContent = now.toLocaleDateString('en-US', options);
+        }
+
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+
+        // ==================== IMAGE SLIDER ====================
+        let currentSlideIndex = 0;
+
+        function changeSlide(n) {
+            showSlide(currentSlideIndex += n);
+        }
+
+        function currentSlide(n) {
+            showSlide(currentSlideIndex = n);
+        }
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slider-slide');
+            const dots = document.querySelectorAll('.slider-dot');
+
+            if (n >= slides.length) currentSlideIndex = 0;
+            if (n < 0) currentSlideIndex = slides.length - 1;
+
+            slides.forEach(slide => slide.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+
+            slides[currentSlideIndex].classList.add('active');
+            dots[currentSlideIndex].classList.add('active');
+        }
+
+        // Auto advance slider
+        setInterval(() => changeSlide(1), 5000);
+
+        // ==================== DYNAMIC STATISTICS ====================
+        function animateCounter(element, target) {
+            let current = 0;
+            const increment = target / 50;
+            const interval = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target.toLocaleString();
+                    if (target > 1000000) {
+                        element.textContent = '$' + (target / 1000000).toFixed(1) + 'M';
+                    }
+                    clearInterval(interval);
+                } else {
+                    element.textContent = Math.floor(current).toLocaleString();
+                }
+            }, 30);
+        }
+
+        // Trigger animation when page loads
+        window.addEventListener('load', function() {
+            document.querySelectorAll('.stat-number').forEach(element => {
+                const target = parseInt(element.dataset.target);
+                animateCounter(element, target);
+            });
+        });
+
+        // ==================== FORM VALIDATION ====================
+        const registrationForm = document.getElementById('registrationForm');
+
+        registrationForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            clearErrors();
+            
+            if (validateForm()) {
+                const successMsg = document.getElementById('successMessage');
+                successMsg.textContent = '✓ Registration successful! Your account has been created.';
+                successMsg.style.animation = 'slideInUp 0.5s ease';
+                registrationForm.reset();
+                
+                setTimeout(() => {
+                    successMsg.textContent = '';
+                }, 3000);
+            }
+        });
+
+        function validateForm() {
+            let isValid = true;
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const password = document.getElementById('password').value;
+            const gender = document.getElementById('gender').value;
+            const dob = document.getElementById('dob').value;
+            const address = document.getElementById('address').value.trim();
+
+            // Name validation
+            if (!name) {
+                showError('nameError', 'Name is required');
+                isValid = false;
+            } else if (name.length < 3) {
+                showError('nameError', 'Name must be at least 3 characters');
+                isValid = false;
+            }
+
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!email) {
+                showError('emailError', 'Email is required');
+                isValid = false;
+            } else if (!emailRegex.test(email)) {
+                showError('emailError', 'Invalid email format');
+                isValid = false;
+            }
+
+            // Phone validation
+            const phoneRegex = /^[\d\s\-\+()]+$/;
+            if (!phone) {
+                showError('phoneError', 'Phone number is required');
+                isValid = false;
+            } else if (!phoneRegex.test(phone)) {
+                showError('phoneError', 'Invalid phone format');
+                isValid = false;
+            }
+
+            // Password validation
+            if (!password) {
+                showError('passwordError', 'Password is required');
+                isValid = false;
+            } else if (password.length < 8) {
+                showError('passwordError', 'Password must be at least 8 characters');
+                isValid = false;
+            }
+
+            // Gender validation
+            if (!gender) {
+                showError('genderError', 'Please select a gender');
+                isValid = false;
+            }
+
+            // DOB validation
+            if (!dob) {
+                showError('dobError', 'Date of birth is required');
+                isValid = false;
+            }
+
+            // Address validation
+            if (!address) {
+                showError('addressError', 'Address is required');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        function showError(elementId, message) {
+            document.getElementById(elementId).textContent = '✗ ' + message;
+        }
+
+        function clearErrors() {
+            document.querySelectorAll('.form-error').forEach(error => {
+                error.textContent = '';
+            });
+        }
+
+        // ==================== NOTIFICATION PANEL ====================
+        function showNotifications() {
+            document.getElementById('notificationPanel').classList.add('show');
+        }
+
+        function closeNotifications() {
+            document.getElementById('notificationPanel').classList.remove('show');
+        }
+
+        // ==================== SCROLL-TO-TOP BUTTON ====================
+        const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollToTopBtn.classList.add('show');
+            } else {
+                scrollToTopBtn.classList.remove('show');
+            }
+        });
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // ==================== ACTIVE NAVIGATION LINK ====================
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                navLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // ==================== SMOOTH SCROLLING ====================
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                if (this.getAttribute('href') === '#logout') {
+                    e.preventDefault();
+                    alert('Logout functionality would go here');
+                    return;
+                }
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
